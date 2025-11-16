@@ -1,0 +1,25 @@
+# TinyWindow AI Trading Engine
+# Python dependencies
+
+# Core dependencies
+python>=3.8
+
+# Data processing
+numpy>=1.21.0
+pandas>=1.3.0
+
+# Machine Learning / Deep Learning
+# Note: These are placeholder versions - actual implementation would use these
+# scikit-learn>=1.0.0
+# tensorflow>=2.8.0
+# torch>=1.10.0
+
+# Data ingestion (placeholder - would integrate with real APIs)
+# yfinance>=0.1.70
+# alpha-vantage>=2.3.1
+
+# Post-quantum cryptography (placeholder - would use liboqs or similar)
+# cryptography>=36.0.0
+
+# Utilities
+python-dateutil>=2.8.2

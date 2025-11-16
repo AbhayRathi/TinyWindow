@@ -1,0 +1,30 @@
+{
+  "data_ingestion": {
+    "sources": ["yahoo_finance", "alpha_vantage"],
+    "update_interval": 3600,
+    "symbols": ["BTC-USD", "ETH-USD", "SPY"],
+    "historical_period": "1y"
+  },
+  "market_agents": {
+    "rl_enabled": true,
+    "ml_models": ["lstm", "transformer", "gradient_boosting"],
+    "training_interval": 86400,
+    "exploration_rate": 0.1
+  },
+  "optimization": {
+    "enabled": true,
+    "algorithm": "reinforcement_learning",
+    "risk_tolerance": 0.3,
+    "max_position_size": 0.1
+  },
+  "encryption": {
+    "algorithm": "kyber",
+    "key_size": 3072,
+    "enabled": true
+  },
+  "system": {
+    "log_level": "INFO",
+    "data_directory": "data",
+    "model_directory": "models"
+  }
+}
