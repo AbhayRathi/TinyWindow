@@ -1,0 +1,1 @@
+"""TinyWindow test suite."""
