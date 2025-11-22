@@ -21,7 +21,9 @@ def test_temporal_split_no_leakage():
     train_indices, test_indices = splitter.split(dates, data)
 
     # Train data should come before test data
-    assert max([dates[i] for i in train_indices]) < min([dates[i] for i in test_indices])
+    assert max([dates[i] for i in train_indices]) < min(
+        [dates[i] for i in test_indices]
+    )
 
     # No overlap between train and test
     assert len(set(train_indices) & set(test_indices)) == 0

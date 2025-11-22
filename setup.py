@@ -1,4 +1,5 @@
 """Setup configuration for TinyWindow."""
+
 from setuptools import setup, find_packages
 
 setup(

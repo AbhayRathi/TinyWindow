@@ -18,7 +18,9 @@ class TemporalSplit:
             raise ValueError("train_ratio must be between 0 and 1")
         self.train_ratio = train_ratio
 
-    def split(self, dates: List[datetime], data: np.ndarray) -> Tuple[List[int], List[int]]:
+    def split(
+        self, dates: List[datetime], data: np.ndarray
+    ) -> Tuple[List[int], List[int]]:
         """Split data temporally.
 
         Args:
@@ -56,7 +58,9 @@ class EmbargoedSplit:
         self.train_ratio = train_ratio
         self.embargo_days = embargo_days
 
-    def split(self, dates: List[datetime], data: np.ndarray) -> Tuple[List[int], List[int]]:
+    def split(
+        self, dates: List[datetime], data: np.ndarray
+    ) -> Tuple[List[int], List[int]]:
         """Split data with embargo period.
 
         Args:
@@ -84,7 +88,10 @@ class EmbargoedSplit:
 
         embargo_cutoff = train_end_date + timedelta(days=self.embargo_days)
 
-        while test_start_idx < len(dates) and dates[sorted_indices[test_start_idx]] < embargo_cutoff:
+        while (
+            test_start_idx < len(dates)
+            and dates[sorted_indices[test_start_idx]] < embargo_cutoff
+        ):
             test_start_idx += 1
 
         train_indices = sorted_indices[:split_idx]

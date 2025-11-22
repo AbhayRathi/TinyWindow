@@ -6,7 +6,9 @@ import numpy as np
 class FeatureEngineer:
     """Feature engineering with leakage prevention."""
 
-    def calculate_returns(self, prices: np.ndarray, lookahead: bool = False) -> np.ndarray:
+    def calculate_returns(
+        self, prices: np.ndarray, lookahead: bool = False
+    ) -> np.ndarray:
         """Calculate returns from price series.
 
         Args:

@@ -33,7 +33,9 @@ class ContextEmbedder:
         """
         # Pad or truncate to fixed size
         padded = np.zeros(self.projection_matrix.shape[0])
-        padded[: min(len(input_data), len(padded))] = input_data[: min(len(input_data), len(padded))]
+        padded[: min(len(input_data), len(padded))] = input_data[
+            : min(len(input_data), len(padded))
+        ]
 
         # Project to embedding dimension
         embedding = padded @ self.projection_matrix

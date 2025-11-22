@@ -13,7 +13,9 @@ def test_market_context_schema():
     from src.data_context.models import MarketContext
 
     # Create a simple context with minimal required fields
-    context = MarketContext(timestamp=1234567890, symbol="AAPL", price=150.0, volume=1000000)
+    context = MarketContext(
+        timestamp=1234567890, symbol="AAPL", price=150.0, volume=1000000
+    )
 
     assert context.timestamp == 1234567890
     assert context.symbol == "AAPL"
@@ -38,7 +40,9 @@ def test_market_context_immutability():
     """Test that MarketContext is immutable after creation."""
     from src.data_context.models import MarketContext
 
-    context = MarketContext(timestamp=1234567890, symbol="AAPL", price=150.0, volume=1000000)
+    context = MarketContext(
+        timestamp=1234567890, symbol="AAPL", price=150.0, volume=1000000
+    )
 
     # Should not be able to modify fields
     with pytest.raises(AttributeError):
