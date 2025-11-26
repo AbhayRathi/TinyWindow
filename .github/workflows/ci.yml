@@ -98,7 +98,16 @@ jobs:
     
     - name: Run cargo-audit
       working-directory: rust
-      run: cargo audit || echo "Warning: cargo-audit found issues (non-blocking for MVP)"
+      run: |
+        # Run cargo-audit and capture result
+        # For MVP: warn on issues but don't block (will be enforced post-audit)
+        # TODO: Enable --deny warnings after external crypto audit
+        if cargo audit 2>&1; then
+          echo "✓ No security advisories found"
+        else
+          echo "⚠️ Security advisories found - see output above"
+          echo "Note: cargo-audit is advisory-only for MVP. High-severity issues will be addressed in crypto audit."
+        fi
     
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
