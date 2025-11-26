@@ -1,0 +1,12 @@
+[package]
+name = "exec_adapter_stub"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Minimal async execution adapter stub for TinyWindow"
+
+[dependencies]
+tokio.workspace = true
+
+[dev-dependencies]

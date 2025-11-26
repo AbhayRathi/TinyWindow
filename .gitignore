@@ -41,3 +41,8 @@ htmlcov/
 venv/
 env/
 ENV/
+
+# Rust
+rust/target/
+rust/Cargo.lock
+*.rlib
