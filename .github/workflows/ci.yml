@@ -76,7 +76,7 @@ jobs:
         fetch-depth: 0
     
     - name: Set up Rust
-      uses: dtolnay/rust-action@stable
+      uses: dtolnay/rust-toolchain@stable
     
     - name: Cache Cargo
       uses: actions/cache@v3
@@ -138,7 +138,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Set up Rust nightly
-      uses: dtolnay/rust-action@nightly
+      uses: dtolnay/rust-toolchain@nightly
     
     - name: Install cargo-fuzz
       run: cargo install cargo-fuzz || echo "cargo-fuzz installation skipped"
