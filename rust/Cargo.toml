@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+members = [
+    "encryption_service",
+    "exec_adapter_stub",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/AbhayRathi/TinyWindow"
+
+[workspace.dependencies]
+pyo3 = { version = "0.22", features = ["extension-module"] }
+tokio = { version = "1", features = ["full"] }
+hmac = "0.12"
+sha2 = "0.10"
+rand = "0.8"
+rand_chacha = "0.3"
