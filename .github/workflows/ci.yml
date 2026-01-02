@@ -104,12 +104,12 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          ~/.cargo/bin/
-          ~/.cargo/registry/index/
-          ~/.cargo/registry/cache/
-          ~/.cargo/git/db/
-          rust/target/
-        key: ${{ runner.os }}-cargo-${{ hashFiles('rust/**/Cargo.lock') }}
+          ~/.cargo/registry
+          ~/.cargo/git
+          rust/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('rust/**/Cargo.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
     
     - name: Run Rust tests
       working-directory: rust
@@ -121,9 +121,12 @@ jobs:
         cargo fmt --all -- --check
         cargo clippy --all-targets --all-features -- -D warnings
     
+    - name: Install cargo-audit
+      run: cargo install cargo-audit
+    
     - name: Security Audit (advisory)
       working-directory: rust
-      run: cargo audit || echo "Advisory warnings (non-blocking for MVP)"
+      run: cargo audit || echo "::warning::Advisory warnings detected (non-blocking for MVP)"
     
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
