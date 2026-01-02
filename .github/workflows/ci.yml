@@ -17,12 +17,12 @@ jobs:
         python-version: ['3.10', '3.11']
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     
@@ -61,7 +61,7 @@ jobs:
     
     - name: Upload coverage to codecov
       if: matrix.python-version == '3.11'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./coverage.xml
         fail_ci_if_error: false
@@ -76,7 +76,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     
@@ -101,7 +101,7 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
     
     - name: Cache Cargo
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
@@ -129,7 +129,7 @@ jobs:
       run: cargo audit || echo "::warning::Advisory warnings detected (non-blocking for MVP)"
     
     - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     
@@ -151,7 +151,7 @@ jobs:
         pytest tests/integration/test_rust_encryption_comprehensive.py -v
         pytest tests/performance/ -v -s
     
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: rust-wheels
         path: rust/target/wheels/*.whl
