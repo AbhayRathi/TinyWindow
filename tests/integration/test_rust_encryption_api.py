@@ -34,4 +34,3 @@ def test_rust_encryption_deterministic():
     k1 = tinywindow_rust_encryption.keygen(seed)
     k2 = tinywindow_rust_encryption.keygen(seed)
     assert k1 == k2
-
