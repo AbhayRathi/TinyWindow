@@ -1,0 +1,23 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "tinywindow_rust_encryption"
+version = "0.1.0"
+description = "Deterministic encryption primitives for TinyWindow (PyO3 bindings)"
+readme = "PORTING.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[tool.maturin]
+# Build only the encryption_service crate with PyO3 bindings
+module-name = "tinywindow_rust_encryption"
+manifest-path = "encryption_service/Cargo.toml"

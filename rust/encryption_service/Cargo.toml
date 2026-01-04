@@ -1,0 +1,20 @@
+[package]
+name = "encryption_service"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Deterministic encryption primitives for TinyWindow (PQC placeholder)"
+
+[lib]
+name = "tinywindow_rust_encryption"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3.workspace = true
+hmac.workspace = true
+sha2.workspace = true
+rand.workspace = true
+rand_chacha.workspace = true
+
+[dev-dependencies]
