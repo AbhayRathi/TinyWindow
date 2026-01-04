@@ -10,16 +10,17 @@
 //! - PyO3 bindings for Python integration
 
 use lazy_static::lazy_static;
-use prometheus::{Counter, Encoder, Histogram, Registry, TextEncoder};
+use prometheus::{Counter, Encoder, HistogramVec, Registry, TextEncoder};
 use pyo3::prelude::*;
 
 lazy_static! {
     static ref REGISTRY: Registry = Registry::new();
     static ref ORDERS_TOTAL: Counter =
         Counter::new("orders_total", "Total orders sent").unwrap();
-    static ref LATENCY: Histogram = Histogram::with_opts(
+    static ref LATENCY: HistogramVec = HistogramVec::new(
         prometheus::HistogramOpts::new("latency_seconds", "Operation latency")
-            .buckets(vec![0.00001, 0.0001, 0.001, 0.01, 0.1]) // 10μs to 100ms
+            .buckets(vec![0.00001, 0.0001, 0.001, 0.01, 0.1]), // 10μs to 100ms
+        &["operation"] // Add label for operation name
     )
     .unwrap();
 }
@@ -58,12 +59,27 @@ pub fn emit_metric(name: &str, _value: f64) {
 
 /// Record operation latency.
 ///
+/// Records latency with the operation name as a label, enabling per-operation filtering.
+/// Operation names are validated to contain only alphanumeric characters and underscores
+/// to prevent label injection attacks.
+///
 /// # Arguments
-/// * `operation` - The name of the operation (currently unused, for future filtering)
+/// * `operation` - The name of the operation (e.g., "order_gen", "order_val")
 /// * `duration_us` - The duration in microseconds
-pub fn record_latency(_operation: &str, duration_us: f64) {
+pub fn record_latency(operation: &str, duration_us: f64) {
+    // Validate operation name to prevent label injection
+    if !operation
+        .chars()
+        .all(|c| c.is_alphanumeric() || c == '_' || c == '.')
+    {
+        eprintln!("Invalid operation name: {}", operation);
+        return;
+    }
+
     init_metrics();
-    LATENCY.observe(duration_us / 1_000_000.0); // Convert μs to seconds
+    LATENCY
+        .with_label_values(&[operation])
+        .observe(duration_us / 1_000_000.0); // Convert μs to seconds
 }
 
 /// Get Prometheus-formatted metrics.
@@ -134,6 +150,36 @@ mod tests {
         record_latency("test_op", 50.0); // 50μs
         let metrics = get_metrics();
         assert!(metrics.contains("latency_seconds"));
+        assert!(metrics.contains(r#"operation="test_op""#));
+    }
+
+    #[test]
+    fn test_per_operation_latency() {
+        record_latency("order_gen", 50.0);
+        record_latency("order_val", 100.0);
+        let metrics = get_metrics();
+
+        assert!(metrics.contains(r#"operation="order_gen""#));
+        assert!(metrics.contains(r#"operation="order_val""#));
+    }
+
+    #[test]
+    fn test_invalid_operation_name() {
+        // Test with SQL injection attempt
+        record_latency("test'; DROP TABLE--", 50.0);
+        let metrics = get_metrics();
+
+        // Should not contain the invalid operation
+        assert!(!metrics.contains(r#"operation="test'; DROP TABLE--""#));
+    }
+
+    #[test]
+    fn test_valid_operation_with_dots() {
+        // Test that dots are allowed (common in operation names)
+        record_latency("order.generation", 50.0);
+        let metrics = get_metrics();
+
+        assert!(metrics.contains(r#"operation="order.generation""#));
     }
 
     #[test]

@@ -79,6 +79,52 @@ def test_rust_latency_recording():
     assert "latency_seconds" in metrics
 
 
+def test_per_operation_latency_labels():
+    """Test that latency tracking includes operation labels for filtering."""
+    telemetry = pytest.importorskip("tinywindow_telemetry")
+
+    # Record latencies for different operations
+    telemetry.record_latency("order_gen", 50.0)
+    telemetry.record_latency("order_val", 100.0)
+    telemetry.record_latency("order_gen", 75.0)  # Second measurement for order_gen
+
+    metrics = telemetry.get_metrics()
+
+    # Verify per-operation labels exist
+    assert 'operation="order_gen"' in metrics
+    assert 'operation="order_val"' in metrics
+
+    # Verify counts are correct (order_gen should have 2 samples)
+    assert 'latency_seconds_count{operation="order_gen"} 2' in metrics
+    assert 'latency_seconds_count{operation="order_val"} 1' in metrics
+
+
+def test_invalid_operation_names_rejected():
+    """Test that invalid operation names are rejected to prevent injection."""
+    telemetry = pytest.importorskip("tinywindow_telemetry")
+
+    # Test with SQL injection attempt
+    telemetry.record_latency("test'; DROP TABLE--", 50.0)
+
+    metrics = telemetry.get_metrics()
+
+    # Should not contain the invalid operation
+    assert 'operation="test\'; DROP TABLE--"' not in metrics
+
+
+def test_valid_operation_names_with_dots():
+    """Test that operation names with dots are allowed (common pattern)."""
+    telemetry = pytest.importorskip("tinywindow_telemetry")
+
+    # Test with dots (common in hierarchical operation names)
+    telemetry.record_latency("order.generation", 50.0)
+
+    metrics = telemetry.get_metrics()
+
+    # Should contain the operation with dots
+    assert 'operation="order.generation"' in metrics
+
+
 def test_logger_setup():
     """Test that the logger setup works."""
     from src.telemetry.logger import setup_logging
