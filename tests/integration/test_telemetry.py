@@ -88,5 +88,9 @@ def test_logger_setup():
     setup_logging("DEBUG")
     setup_logging("WARNING")
 
-    # Test that it doesn't raise with valid level strings
-    assert True  # If we got here, the function works
+    # Test invalid level raises ValueError
+    try:
+        setup_logging("INVALID_LEVEL")
+        assert False, "Should have raised ValueError"
+    except ValueError as e:
+        assert "Invalid logging level" in str(e)

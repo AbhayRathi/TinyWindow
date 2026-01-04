@@ -42,14 +42,18 @@ fn init_metrics() {
 /// Currently supports:
 /// - "orders_total": Increments the total order counter
 ///
+/// Note: Unknown metric names are silently ignored. This is intentional
+/// to allow for flexible metric names without breaking existing code.
+///
 /// # Arguments
 /// * `name` - The name of the metric
-/// * `value` - The value (currently ignored for counters)
+/// * `value` - The value (currently ignored for counters, reserved for future use)
 pub fn emit_metric(name: &str, _value: f64) {
     init_metrics();
     if name == "orders_total" {
         ORDERS_TOTAL.inc();
     }
+    // Silently ignore unknown metrics to allow for flexible metric names
 }
 
 /// Record operation latency.
@@ -66,13 +70,20 @@ pub fn record_latency(_operation: &str, duration_us: f64) {
 ///
 /// # Returns
 /// A string containing all metrics in Prometheus text format
+///
+/// # Note
+/// This function uses unwrap() internally as encoding to a Vec<u8> and
+/// converting to UTF-8 should never fail for Prometheus metrics output.
+/// If it does fail, it indicates a serious internal error.
 pub fn get_metrics() -> String {
     init_metrics();
     let mut buffer = Vec::new();
     let encoder = TextEncoder::new();
     let metric_families = REGISTRY.gather();
-    encoder.encode(&metric_families, &mut buffer).unwrap();
-    String::from_utf8(buffer).unwrap()
+    encoder
+        .encode(&metric_families, &mut buffer)
+        .expect("Failed to encode metrics - this indicates a serious internal error");
+    String::from_utf8(buffer).expect("Metrics should always be valid UTF-8")
 }
 
 // PyO3 bindings for Python interop

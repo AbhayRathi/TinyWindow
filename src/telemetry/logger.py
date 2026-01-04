@@ -9,9 +9,17 @@ def setup_logging(level: str = "INFO") -> None:
 
     Args:
         level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+
+    Raises:
+        ValueError: If an invalid logging level is provided
     """
+    try:
+        log_level = getattr(logging, level)
+    except AttributeError as e:
+        raise ValueError(f"Invalid logging level: {level}") from e
+
     logging.basicConfig(
-        level=getattr(logging, level),
+        level=log_level,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         handlers=[logging.StreamHandler(sys.stdout)],
     )
