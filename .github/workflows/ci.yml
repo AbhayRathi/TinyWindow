@@ -68,8 +68,6 @@ jobs:
 
   rust:
     name: Rust Tests & Bindings
-<<<<<<< HEAD
-=======
     runs-on: ubuntu-latest
     
     steps:
@@ -120,7 +118,11 @@ jobs:
     
     - name: Build Python wheel with maturin
       working-directory: rust
-      run: maturin build --release
+      run: |
+        # Build encryption_service wheel
+        maturin build --release --manifest-path encryption_service/Cargo.toml
+        # Build telemetry wheel
+        maturin build --release --manifest-path telemetry/Cargo.toml
     
     - name: Install wheel
       run: pip install rust/target/wheels/*.whl
@@ -129,6 +131,7 @@ jobs:
       run: |
         pytest tests/integration/test_rust_encryption_api.py -v
         pytest tests/integration/test_rust_encryption_comprehensive.py -v
+        pytest tests/integration/test_telemetry.py -v
         pytest tests/performance/ -v -s
     
     - uses: actions/upload-artifact@v4
@@ -138,75 +141,23 @@ jobs:
 
   codeql:
     name: CodeQL Security Scan
->>>>>>> origin/main
     runs-on: ubuntu-latest
     
     steps:
-<<<<<<< HEAD
-    - uses: actions/checkout@v4
-=======
     - name: Checkout repository
       uses: actions/checkout@v4
->>>>>>> origin/main
       with:
         fetch-depth: 0
     
-    - name: Set up Rust
-      uses: dtolnay/rust-toolchain@stable
-    
-    - name: Cache Cargo
-      uses: actions/cache@v4
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
       with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          rust/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('rust/**/Cargo.toml') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-
+        languages: python
     
-    - name: Run Rust tests
-      working-directory: rust
-      run: cargo test --all --verbose
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
     
-    - name: Formatting & Linting
-      working-directory: rust
-      run: |
-        cargo fmt --all -- --check
-        cargo clippy --all-targets --all-features -- -D warnings
-    
-    - name: Install cargo-audit
-      run: cargo install cargo-audit
-    
-    - name: Security Audit (advisory)
-      working-directory: rust
-      run: cargo audit || echo "::warning::Advisory warnings detected (non-blocking for MVP)"
-    
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Install maturin and pytest
-      run: |
-        python -m pip install --upgrade pip
-        pip install maturin pytest
-    
-    - name: Build Python wheel with maturin
-      working-directory: rust
-      run: maturin build --release
-    
-    - name: Install wheel
-      run: pip install rust/target/wheels/*.whl
-    
-    - name: Run Python integration tests
-      run: |
-        pytest tests/integration/test_rust_encryption_api.py -v
-        pytest tests/integration/test_rust_encryption_comprehensive.py -v
-        pytest tests/performance/ -v -s
-    
-    - uses: actions/upload-artifact@v4
-      with:
-        name: rust-wheels
-        path: rust/target/wheels/*.whl
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+
 

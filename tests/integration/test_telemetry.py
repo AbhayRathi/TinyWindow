@@ -5,6 +5,7 @@ These tests document the expected API contract for the tinywindow_telemetry modu
 They will be skipped when the module is not available and will run once built.
 """
 
+import logging
 import time
 
 import pytest
@@ -76,3 +77,16 @@ def test_rust_latency_recording():
 
     metrics = telemetry.get_metrics()
     assert "latency_seconds" in metrics
+
+
+def test_logger_setup():
+    """Test that the logger setup works."""
+    from src.telemetry.logger import setup_logging
+
+    # Test with different levels - the function should not raise
+    setup_logging("INFO")
+    setup_logging("DEBUG")
+    setup_logging("WARNING")
+
+    # Test that it doesn't raise with valid level strings
+    assert True  # If we got here, the function works

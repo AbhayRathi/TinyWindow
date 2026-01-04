@@ -47,9 +47,8 @@ fn init_metrics() {
 /// * `value` - The value (currently ignored for counters)
 pub fn emit_metric(name: &str, _value: f64) {
     init_metrics();
-    match name {
-        "orders_total" => ORDERS_TOTAL.inc(),
-        _ => {}
+    if name == "orders_total" {
+        ORDERS_TOTAL.inc();
     }
 }
 
@@ -81,24 +80,22 @@ pub fn get_metrics() -> String {
 /// Emit a metric (Python binding).
 #[pyfunction]
 #[pyo3(name = "emit_metric")]
-fn py_emit_metric(name: &str, value: f64) -> PyResult<()> {
+fn py_emit_metric(name: &str, value: f64) {
     emit_metric(name, value);
-    Ok(())
 }
 
 /// Record operation latency (Python binding).
 #[pyfunction]
 #[pyo3(name = "record_latency")]
-fn py_record_latency(operation: &str, duration_us: f64) -> PyResult<()> {
+fn py_record_latency(operation: &str, duration_us: f64) {
     record_latency(operation, duration_us);
-    Ok(())
 }
 
 /// Get Prometheus-formatted metrics (Python binding).
 #[pyfunction]
 #[pyo3(name = "get_metrics")]
-fn py_get_metrics() -> PyResult<String> {
-    Ok(get_metrics())
+fn py_get_metrics() -> String {
+    get_metrics()
 }
 
 /// Python module for TinyWindow telemetry.
