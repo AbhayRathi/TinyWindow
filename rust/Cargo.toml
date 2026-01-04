@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "encryption_service",
     "exec_adapter_stub",
+    "telemetry",
 ]
 
 [workspace.package]
