@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 def test_feed_staleness_threshold():
     """Test that feed correctly identifies stale data."""
-    from src.data_context.feeds import LiveFeed
+    from data_context.feeds import LiveFeed
 
     feed = LiveFeed(staleness_threshold_seconds=5)
 
@@ -30,7 +30,7 @@ def test_feed_staleness_threshold():
 
 def test_feed_staleness_missing_symbol():
     """Test that missing symbols are reported as stale."""
-    from src.data_context.feeds import LiveFeed
+    from data_context.feeds import LiveFeed
 
     feed = LiveFeed(staleness_threshold_seconds=5)
 
@@ -40,7 +40,7 @@ def test_feed_staleness_missing_symbol():
 
 def test_feed_last_update_time():
     """Test that feed tracks last update time correctly."""
-    from src.data_context.feeds import LiveFeed
+    from data_context.feeds import LiveFeed
 
     feed = LiveFeed(staleness_threshold_seconds=5)
 
@@ -53,7 +53,7 @@ def test_feed_last_update_time():
 
 def test_feed_staleness_recovery():
     """Test that stale feeds can become fresh again."""
-    from src.data_context.feeds import LiveFeed
+    from data_context.feeds import LiveFeed
 
     feed = LiveFeed(staleness_threshold_seconds=5)
 
@@ -71,7 +71,7 @@ def test_feed_staleness_recovery():
 
 def test_feed_multiple_symbols():
     """Test staleness tracking for multiple symbols."""
-    from src.data_context.feeds import LiveFeed
+    from data_context.feeds import LiveFeed
 
     feed = LiveFeed(staleness_threshold_seconds=5)
 
@@ -89,7 +89,7 @@ def test_feed_multiple_symbols():
 
 def test_feed_staleness_metrics():
     """Test that feed provides staleness metrics."""
-    from src.data_context.feeds import LiveFeed
+    from data_context.feeds import LiveFeed
 
     feed = LiveFeed(staleness_threshold_seconds=5)
 
@@ -110,7 +110,7 @@ def test_feed_staleness_metrics():
 
 def test_feed_configurable_threshold():
     """Test that staleness threshold is configurable."""
-    from src.data_context.feeds import LiveFeed
+    from data_context.feeds import LiveFeed
 
     # Short threshold
     feed1 = LiveFeed(staleness_threshold_seconds=1)

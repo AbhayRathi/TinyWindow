@@ -10,7 +10,7 @@ import numpy as np
 
 def test_market_context_schema():
     """Test that MarketContext has required fields."""
-    from src.data_context.models import MarketContext
+    from data_context.models import MarketContext
 
     # Create a simple context with minimal required fields
     context = MarketContext(
@@ -25,7 +25,7 @@ def test_market_context_schema():
 
 def test_market_context_validation():
     """Test that MarketContext validates data types."""
-    from src.data_context.models import MarketContext
+    from data_context.models import MarketContext
 
     # Price must be positive
     with pytest.raises(ValueError, match="Price must be positive"):
@@ -38,7 +38,7 @@ def test_market_context_validation():
 
 def test_market_context_immutability():
     """Test that MarketContext is immutable after creation."""
-    from src.data_context.models import MarketContext
+    from data_context.models import MarketContext
 
     context = MarketContext(
         timestamp=1234567890, symbol="AAPL", price=150.0, volume=1000000
@@ -51,7 +51,7 @@ def test_market_context_immutability():
 
 def test_data_snapshot_integrity():
     """Test that data snapshots maintain integrity."""
-    from src.data_context.snapshot import DataSnapshot
+    from data_context.snapshot import DataSnapshot
 
     # Create snapshot with deterministic seed
     snapshot = DataSnapshot(seed=42)
@@ -74,7 +74,7 @@ def test_data_snapshot_integrity():
 
 def test_data_snapshot_deterministic():
     """Test that snapshots are deterministic with same seed."""
-    from src.data_context.snapshot import DataSnapshot
+    from data_context.snapshot import DataSnapshot
 
     snapshot1 = DataSnapshot(seed=42)
     snapshot2 = DataSnapshot(seed=42)

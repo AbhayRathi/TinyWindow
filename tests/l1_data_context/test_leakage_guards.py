@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 def test_temporal_split_no_leakage():
     """Test that temporal split prevents future data leakage."""
-    from src.data_context.splits import TemporalSplit
+    from data_context.splits import TemporalSplit
 
     # Create time series data
     dates = [datetime(2023, 1, 1) + timedelta(days=i) for i in range(100)]
@@ -31,7 +31,7 @@ def test_temporal_split_no_leakage():
 
 def test_temporal_split_validation():
     """Test that temporal split validates inputs."""
-    from src.data_context.splits import TemporalSplit
+    from data_context.splits import TemporalSplit
 
     splitter = TemporalSplit(train_ratio=0.7)
 
@@ -45,7 +45,7 @@ def test_temporal_split_validation():
 
 def test_no_lookahead_bias_in_features():
     """Test that feature engineering doesn't use future data."""
-    from src.data_context.features import FeatureEngineer
+    from data_context.features import FeatureEngineer
 
     # Create simple price series
     prices = np.array([100, 101, 102, 103, 104, 105])
@@ -64,7 +64,7 @@ def test_no_lookahead_bias_in_features():
 
 def test_cross_validation_temporal_order():
     """Test that cross-validation maintains temporal order."""
-    from src.data_context.splits import TimeSeriesCrossValidator
+    from data_context.splits import TimeSeriesCrossValidator
 
     dates = [datetime(2023, 1, 1) + timedelta(days=i) for i in range(100)]
     data = np.random.randn(100, 5)
@@ -78,7 +78,7 @@ def test_cross_validation_temporal_order():
 
 def test_embargo_period():
     """Test that embargo period prevents information leakage."""
-    from src.data_context.splits import EmbargoedSplit
+    from data_context.splits import EmbargoedSplit
 
     dates = [datetime(2023, 1, 1) + timedelta(days=i) for i in range(100)]
     data = np.random.randn(100, 5)
