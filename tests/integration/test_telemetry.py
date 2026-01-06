@@ -27,7 +27,7 @@ def test_telemetry_metrics():
 
 def test_python_decorator():
     """Test that the Python @track_latency decorator works."""
-    from telemetry import track_latency
+    from tinywindow_telemetry import track_latency
 
     @track_latency("test_function")
     def slow_function():
@@ -38,7 +38,7 @@ def test_python_decorator():
 
 def test_python_emit_metric():
     """Test that the Python emit_metric wrapper works."""
-    from telemetry import emit_metric
+    from tinywindow_telemetry import emit_metric
 
     # Should not raise even if Rust module is not available
     emit_metric("orders_total", 1.0)
@@ -46,7 +46,7 @@ def test_python_emit_metric():
 
 def test_python_get_metrics():
     """Test that the Python get_metrics wrapper works."""
-    from telemetry import get_metrics
+    from tinywindow_telemetry import get_metrics
 
     metrics = get_metrics()
     assert isinstance(metrics, str)
@@ -127,7 +127,7 @@ def test_valid_operation_names_with_dots():
 
 def test_logger_setup():
     """Test that the logger setup works."""
-    from telemetry.logger import setup_logging
+    from tinywindow_telemetry.logger import setup_logging
 
     # Test with different levels - the function should not raise
     setup_logging("INFO")
