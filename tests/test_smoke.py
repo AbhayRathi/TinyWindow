@@ -8,10 +8,12 @@ def test_import_version():
     # Check __version__ from top-level package if it exists
     try:
         from data_context import __version__
+
         assert __version__ is not None
     except (ImportError, AttributeError):
         # If no __version__ in data_context, just verify structure exists
         import data_context
+
         assert data_context is not None
 
 
