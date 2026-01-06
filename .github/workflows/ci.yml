@@ -116,13 +116,22 @@ jobs:
         python -m pip install --upgrade pip
         pip install maturin pytest
     
-    - name: Build Python wheel with maturin
-      working-directory: rust
+    - name: Build Python wheels with maturin
       run: |
-        # Build encryption_service wheel
-        maturin build --release --manifest-path encryption_service/Cargo.toml
-        # Build telemetry wheel
-        maturin build --release --manifest-path telemetry/Cargo.toml
+        set -euxo pipefail
+        
+        # Ensure output dir exists
+        mkdir -p rust/target/wheels
+        
+        # Build encryption wheel from its crate dir
+        pushd rust/encryption_service
+        maturin build --release --out ../target/wheels
+        popd
+        
+        # Build telemetry wheel from its crate dir
+        pushd rust/telemetry
+        maturin build --release --out ../target/wheels
+        popd
     
     - name: Install Python wheels
       run: |
@@ -136,7 +145,7 @@ jobs:
         # Verify installations
         echo "Verifying wheel installations:"
         python -c "import tinywindow_rust_encryption; print('✓ Encryption module installed')"
-        python -c "import telemetry; print('✓ Telemetry module installed')"
+        python -c "import tinywindow_telemetry; print('✓ Telemetry module installed')"
     
     - name: Run Python integration tests
       run: |
