@@ -10,7 +10,7 @@ import numpy as np
 
 def test_feature_lookahead_not_implemented():
     """Test that lookahead feature engineering raises NotImplementedError."""
-    from src.data_context.features import FeatureEngineer
+    from data_context.features import FeatureEngineer
 
     engineer = FeatureEngineer()
     prices = np.array([100, 101, 102, 103, 104])
@@ -23,7 +23,7 @@ def test_feature_lookahead_not_implemented():
 
 def test_snapshot_verify_missing_key():
     """Test that verify_integrity returns False for missing key."""
-    from src.data_context.snapshot import DataSnapshot
+    from data_context.snapshot import DataSnapshot
 
     snapshot = DataSnapshot(seed=42)
 
@@ -33,7 +33,7 @@ def test_snapshot_verify_missing_key():
 
 def test_temporal_split_invalid_ratio():
     """Test that TemporalSplit validates train_ratio."""
-    from src.data_context.splits import TemporalSplit
+    from data_context.splits import TemporalSplit
 
     # Ratio must be between 0 and 1
     with pytest.raises(ValueError, match="train_ratio must be between 0 and 1"):
@@ -51,7 +51,7 @@ def test_temporal_split_invalid_ratio():
 
 def test_embargoed_split_mismatched_lengths():
     """Test that EmbargoedSplit validates input lengths."""
-    from src.data_context.splits import EmbargoedSplit
+    from data_context.splits import EmbargoedSplit
     from datetime import datetime, timedelta
 
     splitter = EmbargoedSplit(train_ratio=0.7, embargo_days=7)

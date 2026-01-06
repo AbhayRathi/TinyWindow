@@ -9,7 +9,7 @@ import numpy as np
 
 def test_embedding_deterministic_with_seed():
     """Test that embeddings are deterministic with fixed seed."""
-    from src.data_context.embeddings import ContextEmbedder
+    from data_context.embeddings import ContextEmbedder
 
     # Create embedder with fixed seed
     embedder1 = ContextEmbedder(seed=42, embedding_dim=128)
@@ -28,7 +28,7 @@ def test_embedding_deterministic_with_seed():
 
 def test_embedding_shape():
     """Test that embeddings have correct shape."""
-    from src.data_context.embeddings import ContextEmbedder
+    from data_context.embeddings import ContextEmbedder
 
     embedder = ContextEmbedder(seed=42, embedding_dim=64)
 
@@ -45,7 +45,7 @@ def test_embedding_shape():
 
 def test_embedding_different_seeds():
     """Test that different seeds produce different embeddings."""
-    from src.data_context.embeddings import ContextEmbedder
+    from data_context.embeddings import ContextEmbedder
 
     embedder1 = ContextEmbedder(seed=42, embedding_dim=128)
     embedder2 = ContextEmbedder(seed=123, embedding_dim=128)
@@ -61,7 +61,7 @@ def test_embedding_different_seeds():
 
 def test_embedding_normalization():
     """Test that embeddings are normalized."""
-    from src.data_context.embeddings import ContextEmbedder
+    from data_context.embeddings import ContextEmbedder
 
     embedder = ContextEmbedder(seed=42, embedding_dim=128, normalize=True)
 
@@ -75,7 +75,7 @@ def test_embedding_normalization():
 
 def test_embedding_reproducibility():
     """Test that embeddings are reproducible across multiple calls."""
-    from src.data_context.embeddings import ContextEmbedder
+    from data_context.embeddings import ContextEmbedder
 
     embedder = ContextEmbedder(seed=42, embedding_dim=128)
 
@@ -92,7 +92,7 @@ def test_embedding_reproducibility():
 
 def test_embedding_handles_different_input_sizes():
     """Test that embedder handles variable input sizes."""
-    from src.data_context.embeddings import ContextEmbedder
+    from data_context.embeddings import ContextEmbedder
 
     embedder = ContextEmbedder(seed=42, embedding_dim=64)
 
