@@ -60,7 +60,8 @@ jobs:
         pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=90 \
           --ignore=tests/integration/test_telemetry.py \
           --ignore=tests/integration/test_rust_encryption_api.py \
-          --ignore=tests/integration/test_rust_encryption_comprehensive.py
+          --ignore=tests/integration/test_rust_encryption_comprehensive.py \
+          --cov-config=.coveragerc
     
     - name: Upload coverage to codecov
       if: matrix.python-version == '3.11'
@@ -182,5 +183,3 @@ jobs:
     
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
-
-
