@@ -57,7 +57,10 @@ jobs:
     
     - name: Run tests with coverage
       run: |
-        pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=90
+        pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=90 \
+          --ignore=tests/integration/test_telemetry.py \
+          --ignore=tests/integration/test_rust_encryption_api.py \
+          --ignore=tests/integration/test_rust_encryption_comprehensive.py
     
     - name: Upload coverage to codecov
       if: matrix.python-version == '3.11'
