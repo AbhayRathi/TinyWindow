@@ -25,7 +25,6 @@ def test_telemetry_metrics():
     assert "latency_seconds" in metrics
 
 
-@pytest.mark.xfail(reason="track_latency decorator not yet implemented in Rust module")
 def test_python_decorator():
     """Test that the Python @track_latency decorator works."""
     from tinywindow_telemetry import track_latency
@@ -126,7 +125,6 @@ def test_valid_operation_names_with_dots():
     assert 'operation="order.generation"' in metrics
 
 
-@pytest.mark.xfail(reason="logger submodule not yet implemented in Rust module")
 def test_logger_setup():
     """Test that the logger setup works."""
     from tinywindow_telemetry.logger import setup_logging

@@ -13,6 +13,6 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 pyo3.workspace = true
 prometheus = "0.13"
-lazy_static = "1.4"
+lazy_static = "1.5"
 
 [dev-dependencies]

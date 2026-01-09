@@ -9,6 +9,8 @@
 //! - Prometheus-compatible metrics export
 //! - PyO3 bindings for Python integration
 
+mod logger;
+
 use lazy_static::lazy_static;
 use prometheus::{Counter, Encoder, HistogramVec, Registry, TextEncoder};
 use pyo3::prelude::*;
@@ -125,12 +127,63 @@ fn py_get_metrics() -> String {
     get_metrics()
 }
 
+/// Decorator for tracking function latency (Python binding).
+/// 
+/// Usage:
+/// ```python
+/// from tinywindow_telemetry import track_latency
+/// 
+/// @track_latency("my_operation")
+/// def my_function():
+///     # Your code here
+///     pass
+/// ```
+#[pyclass]
+struct TrackLatency {
+    operation: String,
+}
+
+#[pymethods]
+impl TrackLatency {
+    #[new]
+    fn new(operation: String) -> Self {
+        Self { operation }
+    }
+
+    fn __call__(&self, func: PyObject, py: Python) -> PyResult<PyObject> {
+        let operation = self.operation.clone();
+        
+        // Create a wrapper function
+        let wrapper = move |args: &Bound<'_, pyo3::types::PyTuple>, kwargs: Option<&Bound<'_, pyo3::types::PyDict>>| -> PyResult<PyObject> {
+            let start = std::time::Instant::now();
+            
+            // Call the original function
+            let result = func.call_bound(py, args, kwargs)?;
+            
+            // Record latency
+            let duration_us = start.elapsed().as_micros() as f64;
+            record_latency(&operation, duration_us);
+            
+            Ok(result)
+        };
+        
+        Ok(pyo3::types::PyCFunction::new_closure_bound(py, None, None, wrapper)?.into())
+    }
+}
+
 /// Python module for TinyWindow telemetry.
 #[pymodule]
 fn tinywindow_telemetry(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_emit_metric, m)?)?;
     m.add_function(wrap_pyfunction!(py_record_latency, m)?)?;
     m.add_function(wrap_pyfunction!(py_get_metrics, m)?)?;
+    m.add_class::<TrackLatency>()?;
+    
+    // Add logger submodule
+    let logger_module = PyModule::new_bound(m.py(), "logger")?;
+    logger_module.add_function(wrap_pyfunction!(logger::setup_logging, &logger_module)?)?;
+    m.add_submodule(&logger_module)?;
+    
     Ok(())
 }
 
