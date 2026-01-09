@@ -150,24 +150,35 @@ impl TrackLatency {
         Self { operation }
     }
 
-    fn __call__(&self, func: PyObject, py: Python) -> PyResult<PyObject> {
-        let operation = self.operation.clone();
+    fn __call__(&self, func: PyObject) -> PyResult<TrackedFunction> {
+        Ok(TrackedFunction {
+            operation: self.operation.clone(),
+            func,
+        })
+    }
+}
+
+/// Wrapper function that tracks latency.
+#[pyclass]
+struct TrackedFunction {
+    operation: String,
+    func: PyObject,
+}
+
+#[pymethods]
+impl TrackedFunction {
+    #[pyo3(signature = (*args, **kwargs))]
+    fn __call__(&self, py: Python, args: &Bound<'_, pyo3::types::PyTuple>, kwargs: Option<&Bound<'_, pyo3::types::PyDict>>) -> PyResult<PyObject> {
+        let start = std::time::Instant::now();
         
-        // Create a wrapper function
-        let wrapper = move |args: &Bound<'_, pyo3::types::PyTuple>, kwargs: Option<&Bound<'_, pyo3::types::PyDict>>| -> PyResult<PyObject> {
-            let start = std::time::Instant::now();
-            
-            // Call the original function
-            let result = func.call_bound(py, args, kwargs)?;
-            
-            // Record latency
-            let duration_us = start.elapsed().as_micros() as f64;
-            record_latency(&operation, duration_us);
-            
-            Ok(result)
-        };
+        // Call the original function
+        let result = self.func.call_bound(py, args, kwargs)?;
         
-        Ok(pyo3::types::PyCFunction::new_closure_bound(py, None, None, wrapper)?.into())
+        // Record latency
+        let duration_us = start.elapsed().as_micros() as f64;
+        record_latency(&self.operation, duration_us);
+        
+        Ok(result)
     }
 }
 
@@ -179,10 +190,18 @@ fn tinywindow_telemetry(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_get_metrics, m)?)?;
     m.add_class::<TrackLatency>()?;
     
+    // Add track_latency as an alias for TrackLatency (Python naming convention)
+    m.add("track_latency", m.getattr("TrackLatency")?)?;
+    
     // Add logger submodule
     let logger_module = PyModule::new_bound(m.py(), "logger")?;
     logger_module.add_function(wrap_pyfunction!(logger::setup_logging, &logger_module)?)?;
     m.add_submodule(&logger_module)?;
+    
+    // Register submodule in sys.modules to enable "from tinywindow_telemetry.logger import ..."
+    m.py().import_bound("sys")?
+        .getattr("modules")?
+        .set_item("tinywindow_telemetry.logger", logger_module)?;
     
     Ok(())
 }
