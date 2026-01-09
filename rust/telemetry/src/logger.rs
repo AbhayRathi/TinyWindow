@@ -9,11 +9,16 @@ use pyo3::prelude::*;
 ///
 /// # Errors
 /// Returns `ValueError` if the level is invalid.
+///
+/// # Note
+/// This is a minimal implementation for M0. In production, this would integrate
+/// with env_logger or a similar Rust logging framework. For now, it validates
+/// the log level and prints a confirmation message.
 #[pyfunction]
 pub fn setup_logging(level: &str) -> PyResult<()> {
     match level.to_uppercase().as_str() {
         "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL" => {
-            // In a real implementation, this would configure env_logger or similar
+            // Minimal implementation for M0 - validates level and confirms setup
             println!("Logging level set to: {}", level);
             Ok(())
         }

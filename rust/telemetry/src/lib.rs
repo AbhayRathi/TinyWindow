@@ -138,6 +138,9 @@ fn py_get_metrics() -> String {
 ///     # Your code here
 ///     pass
 /// ```
+/// 
+/// Note: `track_latency` is a Python-style alias for the `TrackLatency` class.
+/// Both names are available for use.
 #[pyclass]
 struct TrackLatency {
     operation: String,
@@ -198,7 +201,8 @@ fn tinywindow_telemetry(m: &Bound<'_, PyModule>) -> PyResult<()> {
     logger_module.add_function(wrap_pyfunction!(logger::setup_logging, &logger_module)?)?;
     m.add_submodule(&logger_module)?;
     
-    // Register submodule in sys.modules to enable "from tinywindow_telemetry.logger import ..."
+    // Manual registration in sys.modules is required to enable "from tinywindow_telemetry.logger import ..."
+    // PyO3's add_submodule alone doesn't register the module in sys.modules for import resolution
     m.py().import_bound("sys")?
         .getattr("modules")?
         .set_item("tinywindow_telemetry.logger", logger_module)?;
