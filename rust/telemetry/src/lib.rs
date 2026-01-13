@@ -128,17 +128,17 @@ fn py_get_metrics() -> String {
 }
 
 /// Decorator for tracking function latency (Python binding).
-/// 
+///
 /// Usage:
 /// ```python
 /// from tinywindow_telemetry import track_latency
-/// 
+///
 /// @track_latency("my_operation")
 /// def my_function():
 ///     # Your code here
 ///     pass
 /// ```
-/// 
+///
 /// Note: `track_latency` is a Python-style alias for the `TrackLatency` class.
 /// Both names are available for use.
 #[pyclass]
@@ -171,16 +171,21 @@ struct TrackedFunction {
 #[pymethods]
 impl TrackedFunction {
     #[pyo3(signature = (*args, **kwargs))]
-    fn __call__(&self, py: Python, args: &Bound<'_, pyo3::types::PyTuple>, kwargs: Option<&Bound<'_, pyo3::types::PyDict>>) -> PyResult<PyObject> {
+    fn __call__(
+        &self,
+        py: Python,
+        args: &Bound<'_, pyo3::types::PyTuple>,
+        kwargs: Option<&Bound<'_, pyo3::types::PyDict>>,
+    ) -> PyResult<PyObject> {
         let start = std::time::Instant::now();
-        
+
         // Call the original function
         let result = self.func.call_bound(py, args, kwargs)?;
-        
+
         // Record latency
         let duration_us = start.elapsed().as_micros() as f64;
         record_latency(&self.operation, duration_us);
-        
+
         Ok(result)
     }
 }
@@ -192,21 +197,22 @@ fn tinywindow_telemetry(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_record_latency, m)?)?;
     m.add_function(wrap_pyfunction!(py_get_metrics, m)?)?;
     m.add_class::<TrackLatency>()?;
-    
+
     // Add track_latency as an alias for TrackLatency (Python naming convention)
     m.add("track_latency", m.getattr("TrackLatency")?)?;
-    
+
     // Add logger submodule
     let logger_module = PyModule::new_bound(m.py(), "logger")?;
     logger_module.add_function(wrap_pyfunction!(logger::setup_logging, &logger_module)?)?;
     m.add_submodule(&logger_module)?;
-    
+
     // Manual registration in sys.modules is required to enable "from tinywindow_telemetry.logger import ..."
     // PyO3's add_submodule alone doesn't register the module in sys.modules for import resolution
-    m.py().import_bound("sys")?
+    m.py()
+        .import_bound("sys")?
         .getattr("modules")?
         .set_item("tinywindow_telemetry.logger", logger_module)?;
-    
+
     Ok(())
 }
 
