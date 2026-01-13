@@ -77,7 +77,7 @@ pub fn verify(key: &[u8], payload: &[u8], sig: &[u8]) -> bool {
 #[pyo3(name = "keygen")]
 fn py_keygen<'py>(py: Python<'py>, seed: u64) -> Bound<'py, PyBytes> {
     let key = keygen(seed);
-    PyBytes::new_bound(py, &key)
+    PyBytes::new(py, &key)
 }
 
 /// Sign a payload with the given key (Python binding).
@@ -85,7 +85,7 @@ fn py_keygen<'py>(py: Python<'py>, seed: u64) -> Bound<'py, PyBytes> {
 #[pyo3(name = "sign")]
 fn py_sign<'py>(py: Python<'py>, key: Vec<u8>, payload: Vec<u8>) -> Bound<'py, PyBytes> {
     let sig = sign(&key, &payload);
-    PyBytes::new_bound(py, &sig)
+    PyBytes::new(py, &sig)
 }
 
 /// Verify a signature (Python binding).

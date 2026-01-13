@@ -180,7 +180,7 @@ impl TrackedFunction {
         let start = std::time::Instant::now();
 
         // Call the original function
-        let result = self.func.call_bound(py, args, kwargs)?;
+        let result = self.func.call(py, args, kwargs)?;
 
         // Record latency
         let duration_us = start.elapsed().as_micros() as f64;
@@ -202,14 +202,14 @@ fn tinywindow_telemetry(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("track_latency", m.getattr("TrackLatency")?)?;
 
     // Add logger submodule
-    let logger_module = PyModule::new_bound(m.py(), "logger")?;
+    let logger_module = PyModule::new(m.py(), "logger")?;
     logger_module.add_function(wrap_pyfunction!(logger::setup_logging, &logger_module)?)?;
     m.add_submodule(&logger_module)?;
 
     // Manual registration in sys.modules is required to enable "from tinywindow_telemetry.logger import ..."
     // PyO3's add_submodule alone doesn't register the module in sys.modules for import resolution
     m.py()
-        .import_bound("sys")?
+        .import("sys")?
         .getattr("modules")?
         .set_item("tinywindow_telemetry.logger", logger_module)?;
 
