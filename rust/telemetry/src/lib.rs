@@ -9,6 +9,8 @@
 //! - Prometheus-compatible metrics export
 //! - PyO3 bindings for Python integration
 
+mod logger;
+
 use lazy_static::lazy_static;
 use prometheus::{Counter, Encoder, HistogramVec, Registry, TextEncoder};
 use pyo3::prelude::*;
@@ -125,12 +127,92 @@ fn py_get_metrics() -> String {
     get_metrics()
 }
 
+/// Decorator for tracking function latency (Python binding).
+///
+/// Usage:
+/// ```python
+/// from tinywindow_telemetry import track_latency
+///
+/// @track_latency("my_operation")
+/// def my_function():
+///     # Your code here
+///     pass
+/// ```
+///
+/// Note: `track_latency` is a Python-style alias for the `TrackLatency` class.
+/// Both names are available for use.
+#[pyclass]
+struct TrackLatency {
+    operation: String,
+}
+
+#[pymethods]
+impl TrackLatency {
+    #[new]
+    fn new(operation: String) -> Self {
+        Self { operation }
+    }
+
+    fn __call__(&self, func: PyObject) -> PyResult<TrackedFunction> {
+        Ok(TrackedFunction {
+            operation: self.operation.clone(),
+            func,
+        })
+    }
+}
+
+/// Wrapper function that tracks latency.
+#[pyclass]
+struct TrackedFunction {
+    operation: String,
+    func: PyObject,
+}
+
+#[pymethods]
+impl TrackedFunction {
+    #[pyo3(signature = (*args, **kwargs))]
+    fn __call__(
+        &self,
+        py: Python,
+        args: &Bound<'_, pyo3::types::PyTuple>,
+        kwargs: Option<&Bound<'_, pyo3::types::PyDict>>,
+    ) -> PyResult<PyObject> {
+        let start = std::time::Instant::now();
+
+        // Call the original function
+        let result = self.func.call(py, args, kwargs)?;
+
+        // Record latency
+        let duration_us = start.elapsed().as_micros() as f64;
+        record_latency(&self.operation, duration_us);
+
+        Ok(result)
+    }
+}
+
 /// Python module for TinyWindow telemetry.
 #[pymodule]
 fn tinywindow_telemetry(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_emit_metric, m)?)?;
     m.add_function(wrap_pyfunction!(py_record_latency, m)?)?;
     m.add_function(wrap_pyfunction!(py_get_metrics, m)?)?;
+    m.add_class::<TrackLatency>()?;
+
+    // Add track_latency as an alias for TrackLatency (Python naming convention)
+    m.add("track_latency", m.getattr("TrackLatency")?)?;
+
+    // Add logger submodule
+    let logger_module = PyModule::new(m.py(), "logger")?;
+    logger_module.add_function(wrap_pyfunction!(logger::setup_logging, &logger_module)?)?;
+    m.add_submodule(&logger_module)?;
+
+    // Manual registration in sys.modules is required to enable "from tinywindow_telemetry.logger import ..."
+    // PyO3's add_submodule alone doesn't register the module in sys.modules for import resolution
+    m.py()
+        .import("sys")?
+        .getattr("modules")?
+        .set_item("tinywindow_telemetry.logger", logger_module)?;
+
     Ok(())
 }
 

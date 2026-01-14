@@ -13,7 +13,7 @@ license = "MIT"
 repository = "https://github.com/AbhayRathi/TinyWindow"
 
 [workspace.dependencies]
-pyo3 = { version = "0.22", features = ["extension-module"] }
+pyo3 = { version = "0.24", features = ["extension-module"] }
 tokio = { version = "1", features = ["full"] }
 hmac = "0.12"
 sha2 = "0.10"
