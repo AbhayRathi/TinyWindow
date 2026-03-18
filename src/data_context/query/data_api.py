@@ -58,7 +58,7 @@ class DataAPI:
         from datetime import datetime, timezone
         from pymongo import ASCENDING
 
-        col = self._store._db["sentiment_data"]
+        col = self._store.get_collection("sentiment_data")
         query: dict = {
             "symbol": symbol,
             "timestamp": {
@@ -78,7 +78,7 @@ class DataAPI:
         from datetime import datetime, timezone
         from pymongo import ASCENDING
 
-        col = self._store._db["funding_rates"]
+        col = self._store.get_collection("funding_rates")
         docs = list(
             col.find(
                 {

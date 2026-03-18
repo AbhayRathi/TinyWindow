@@ -122,3 +122,7 @@ class MongoDBStore:
 
     def close(self):
         self._client.close()
+
+    def get_collection(self, name: str) -> Collection:
+        """Return a MongoDB collection by name."""
+        return self._db[name]
