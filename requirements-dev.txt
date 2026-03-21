@@ -9,7 +9,7 @@ mongomock>=4.1.2
 
 # Linting
 flake8>=6.1.0
-black>=23.7.0
+black>=23.7.0,<26
 
 # Type checking
 mypy>=1.5.0
