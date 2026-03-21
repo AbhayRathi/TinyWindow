@@ -43,6 +43,9 @@ venv/
 env/
 ENV/
 
+# Environment secrets
+.env
+
 # Rust
 rust/target/
 rust/Cargo.lock
