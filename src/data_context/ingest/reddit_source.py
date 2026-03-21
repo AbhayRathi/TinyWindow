@@ -1,4 +1,5 @@
 """Reddit sentiment data source adapter."""
+
 import pandas as pd
 import praw
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer

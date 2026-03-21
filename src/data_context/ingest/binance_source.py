@@ -1,4 +1,5 @@
 """Binance data source adapter — spot OHLCV + perpetual funding rates."""
+
 import pandas as pd
 from binance.client import Client
 from tenacity import retry, stop_after_attempt, wait_exponential

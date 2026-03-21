@@ -1,4 +1,5 @@
 """Alpaca Markets data source adapter."""
+
 import pandas as pd
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest

@@ -48,7 +48,11 @@ def sentiment_df():
             "platform": ["reddit", "reddit", "twitter"],
             "text": ["post a", "post b", "tweet c"],
             "sentiment_score": [0.5, -0.3, 0.8],
-            "source_url": ["https://reddit.com/1", "https://reddit.com/2", "https://t.co/3"],
+            "source_url": [
+                "https://reddit.com/1",
+                "https://reddit.com/2",
+                "https://t.co/3",
+            ],
         }
     )
 

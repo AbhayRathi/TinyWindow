@@ -1,4 +1,5 @@
 """Twitter/X sentiment data source adapter (Tweepy v4, API v2)."""
+
 import pandas as pd
 import tweepy
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer

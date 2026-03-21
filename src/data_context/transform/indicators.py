@@ -1,4 +1,5 @@
 """Technical indicator computation using pandas-ta."""
+
 import pandas as pd
 import pandas_ta_classic as ta
 

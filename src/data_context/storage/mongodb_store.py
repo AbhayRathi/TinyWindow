@@ -1,4 +1,5 @@
 """MongoDB Atlas storage adapter for L1 data."""
+
 from __future__ import annotations
 import pandas as pd
 from pymongo import MongoClient, ASCENDING
@@ -75,9 +76,7 @@ class MongoDBStore:
             {
                 "symbol": symbol,
                 "timestamp": {
-                    "$gte": datetime.fromisoformat(start).replace(
-                        tzinfo=timezone.utc
-                    ),
+                    "$gte": datetime.fromisoformat(start).replace(tzinfo=timezone.utc),
                     "$lte": datetime.fromisoformat(end).replace(tzinfo=timezone.utc),
                 },
             }

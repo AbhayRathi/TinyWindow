@@ -60,7 +60,16 @@ class TestGetOHLCV:
             "AAPL", "2023-01-01", "2023-04-10", with_indicators=True, clean=False
         )
 
-        for col in ("rsi", "macd", "macd_signal", "bb_upper", "bb_lower", "atr", "vwap", "obv"):
+        for col in (
+            "rsi",
+            "macd",
+            "macd_signal",
+            "bb_upper",
+            "bb_lower",
+            "atr",
+            "vwap",
+            "obv",
+        ):
             assert col in result.columns, f"Missing column: {col}"
 
     def test_empty_store_returns_empty_dataframe(self, api, mock_store):
@@ -124,7 +133,9 @@ class TestGetSentiment:
                 "source_url": "https://reddit.com/1",
             }
         ]
-        mock_store.get_collection.return_value.find.return_value.sort.return_value = docs
+        mock_store.get_collection.return_value.find.return_value.sort.return_value = (
+            docs
+        )
 
         result = api.get_sentiment("AAPL", "2023-01-01", "2023-01-31")
 
@@ -144,9 +155,13 @@ class TestGetSentiment:
                 "source_url": "https://reddit.com/1",
             }
         ]
-        mock_store.get_collection.return_value.find.return_value.sort.return_value = docs
+        mock_store.get_collection.return_value.find.return_value.sort.return_value = (
+            docs
+        )
 
-        result = api.get_sentiment("AAPL", "2023-01-01", "2023-01-31", platform="reddit")
+        result = api.get_sentiment(
+            "AAPL", "2023-01-01", "2023-01-31", platform="reddit"
+        )
 
         mock_store.get_collection.assert_called_with("sentiment_data")
         call_args = mock_store.get_collection.return_value.find.call_args
@@ -179,7 +194,9 @@ class TestGetFundingRates:
             {"symbol": "BTCUSDT", "timestamp": ts1, "rate": 0.0001},
             {"symbol": "BTCUSDT", "timestamp": ts2, "rate": -0.0002},
         ]
-        mock_store.get_collection.return_value.find.return_value.sort.return_value = docs
+        mock_store.get_collection.return_value.find.return_value.sort.return_value = (
+            docs
+        )
 
         result = api.get_funding_rates("BTCUSDT", "2023-01-01", "2023-01-31")
 

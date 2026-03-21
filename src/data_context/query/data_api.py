@@ -1,4 +1,5 @@
 """Unified L1 data query API — the single interface for all downstream consumers."""
+
 from __future__ import annotations
 import pandas as pd
 from typing import Optional

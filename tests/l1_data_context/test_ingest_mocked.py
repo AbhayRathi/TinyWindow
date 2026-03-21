@@ -227,9 +227,7 @@ class TestRedditSource:
         mock_subreddit.search.return_value = [mock_post]
         mock_praw.Reddit.return_value.subreddit.return_value = mock_subreddit
 
-        config = RedditConfig(
-            client_id="test", client_secret="test", user_agent="test"
-        )
+        config = RedditConfig(client_id="test", client_secret="test", user_agent="test")
         source = RedditSource(config)
         result = source.fetch_sentiment("AAPL", subreddits=["stocks"])
 
@@ -249,9 +247,7 @@ class TestRedditSource:
         mock_subreddit.search.return_value = []
         mock_praw.Reddit.return_value.subreddit.return_value = mock_subreddit
 
-        config = RedditConfig(
-            client_id="test", client_secret="test", user_agent="test"
-        )
+        config = RedditConfig(client_id="test", client_secret="test", user_agent="test")
         source = RedditSource(config)
         result = source.fetch_sentiment("AAPL", subreddits=["stocks"])
 

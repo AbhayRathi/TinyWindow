@@ -1,4 +1,5 @@
 """Yahoo Finance data source adapter (yfinance)."""
+
 import yfinance as yf
 import pandas as pd
 from tenacity import retry, stop_after_attempt, wait_exponential

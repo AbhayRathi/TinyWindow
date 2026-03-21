@@ -1,4 +1,5 @@
 """Abstract base class for all data sources."""
+
 from abc import ABC, abstractmethod
 import pandas as pd
 

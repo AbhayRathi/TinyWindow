@@ -121,9 +121,7 @@ class TestValidateOHLCV:
 
 class TestDeduplicate:
     def test_removes_duplicates(self, cleaner):
-        dates = pd.to_datetime(
-            ["2023-01-01", "2023-01-01", "2023-01-02"], utc=True
-        )
+        dates = pd.to_datetime(["2023-01-01", "2023-01-01", "2023-01-02"], utc=True)
         df = pd.DataFrame(
             {"close": [100, 101, 102]},
             index=dates,

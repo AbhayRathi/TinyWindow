@@ -148,14 +148,10 @@ class TestFundingRate:
 
     def test_invalid_exchange(self):
         with pytest.raises(ValueError, match="Unknown exchange"):
-            FundingRate(
-                timestamp=1, symbol="BTCUSDT", rate=0.0001, exchange="kraken"
-            )
+            FundingRate(timestamp=1, symbol="BTCUSDT", rate=0.0001, exchange="kraken")
 
     def test_immutability(self):
-        fr = FundingRate(
-            timestamp=1, symbol="BTCUSDT", rate=0.0001, exchange="binance"
-        )
+        fr = FundingRate(timestamp=1, symbol="BTCUSDT", rate=0.0001, exchange="binance")
         with pytest.raises(AttributeError):
             fr.rate = 0.0002
 
